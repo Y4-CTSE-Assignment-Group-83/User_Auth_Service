@@ -35,10 +35,9 @@ jobs:
         uses: snyk/actions/node@master
         with:
           command: test
-          args: --severity-threshold=high
+          args: --severity-threshold=high --file=backend/package.json
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        working-directory: backend
 
       - name: 🐍 Setup Python for Semgrep
         uses: actions/setup-python@v5
