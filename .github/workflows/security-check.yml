@@ -1,0 +1,66 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [ main, development_v1, live ]
+  pull_request:
+    branches: [ main, development_v1, live ]
+  workflow_dispatch:
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        project-dir: ["backend"]
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: 📦 Install pnpm
+        run: npm install -g pnpm
+
+      - name: 📦 Install dependencies
+        working-directory: ${{ matrix.project-dir }}
+        run: pnpm install --no-frozen-lockfile
+
+      # -----------------------------
+      # Dependency Vulnerability Scan
+      # -----------------------------
+      - name: 🔍 Run dependency vulnerability audit
+        working-directory: ${{ matrix.project-dir }}
+        run: pnpm audit --audit-level=moderate
+
+      # -----------------------------
+      # Snyk Security Scan
+      # -----------------------------
+      - name: 🔐 Run Snyk Security Scan
+        uses: snyk/actions/node@master
+        with:
+          command: test
+          args: --severity-threshold=high
+          working-directory: ${{ matrix.project-dir }}
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      # -----------------------------
+      # Semgrep Static Code Analysis
+      # -----------------------------
+      - name: 🐍 Setup Python for Semgrep
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: 🛡 Install Semgrep
+        run: pip install semgrep
+
+      - name: 🔎 Run Semgrep Security Scan
+        run: semgrep --config=p/ci --error --exclude=**/node_modules/**
