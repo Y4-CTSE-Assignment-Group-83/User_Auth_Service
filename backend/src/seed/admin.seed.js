@@ -1,3 +1,5 @@
+// This script seeds the database with an admin user if one doesn't already exist.
+
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
