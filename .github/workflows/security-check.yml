@@ -35,7 +35,7 @@ jobs:
         uses: snyk/actions/node@master
         with:
           command: test
-          args: --severity-threshold=high --file=backend/package.json
+          args: --severity-threshold=high --policy-path=backend
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
