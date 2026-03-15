@@ -8,12 +8,31 @@ const options = {
       version: "1.0.0",
       description: "Authentication microservice for Salon Booking System",
     },
+
     servers: [
       {
         url: "http://localhost:5000",
+        description: "Local development server",
+      },
+    ],
+
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
+
+    security: [
+      {
+        bearerAuth: [],
       },
     ],
   },
+
   apis: ["./src/routes/*.js"], // Swagger will read comments from routes
 };
 

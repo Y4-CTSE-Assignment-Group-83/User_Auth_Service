@@ -6,7 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
    VERIFY TOKEN
 =========================== */
 
-export const verifyToken = (req, res, next) => {
+export const verifyToken = async (req, res, next) => {
   try {
     if (!JWT_SECRET) {
       throw new Error("JWT_SECRET is not defined");
@@ -19,7 +19,7 @@ export const verifyToken = (req, res, next) => {
       token = req.cookies.jwt;
     }
 
-    // 2️⃣ Fallback to Authorization header (useful for Postman)
+    // 2️⃣ Fallback to Authorization header
     if (!token) {
       const authHeader = req.headers.authorization || "";
       if (authHeader.startsWith("Bearer ")) {
@@ -33,10 +33,44 @@ export const verifyToken = (req, res, next) => {
       });
     }
 
+    // Verify token signature
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    // Attach decoded payload to request
-    req.user = decoded;
+    // Fetch user from database
+    const user = await User.findById(decoded.userId).select(
+      "_id role isActive passwordChangedAt",
+    );
+
+    if (!user) {
+      return res.status(401).json({
+        message: "Unauthorized: User not found",
+      });
+    }
+
+    if (!user.isActive) {
+      return res.status(403).json({
+        message: "Account is deactivated",
+      });
+    }
+
+    // Check if password was changed after token was issued
+    if (user.passwordChangedAt) {
+      const passwordChangedTimestamp = Math.floor(
+        new Date(user.passwordChangedAt).getTime() / 1000,
+      );
+
+      if (decoded.iat < passwordChangedTimestamp) {
+        return res.status(401).json({
+          message: "Session expired. Please login again.",
+        });
+      }
+    }
+
+    // Attach safe user data to request
+    req.user = {
+      userId: user._id.toString(),
+      role: user.role,
+    };
 
     next();
   } catch (error) {
@@ -46,6 +80,20 @@ export const verifyToken = (req, res, next) => {
       message: "Unauthorized: Invalid or expired token",
     });
   }
+};
+
+/* ===========================
+   CUSTOMER ONLY
+=========================== */
+
+export const requireCustomer = (req, res, next) => {
+  if (!req.user || req.user.role !== "CUSTOMER") {
+    return res.status(403).json({
+      message: "Customer access required",
+    });
+  }
+
+  next();
 };
 
 /* ===========================
