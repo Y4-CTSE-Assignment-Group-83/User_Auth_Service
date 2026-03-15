@@ -18,6 +18,10 @@ import swaggerSpec from "./src/config/swagger.js";
    Import Routes
 =========================== */
 import authRoutes from "./src/routes/auth.routes.js";
+import staffRoutes from "./src/routes/staff.routes.js";
+import staffManagementRoutes from "./src/routes/staff_management.routes.js";
+import customerRoutes from "./src/routes/customer.routes.js";
+import customerManagementRoutes from "./src/routes/customer_management.routes.js";
 
 dotenv.config();
 
@@ -61,6 +65,10 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 =========================== */
 
 app.use("/api/auth", authRoutes);
+app.use("/api/staff", staffRoutes);
+app.use("/api/staff-management", staffManagementRoutes);
+app.use("/api/customer", customerRoutes);
+app.use("/api/customer-management", customerManagementRoutes);
 
 /* ===========================
    START SERVER
