@@ -4,13 +4,20 @@ import {
   loginUser,
   logoutUser,
   getMe,
+  forgotPassword,
+  resetPassword,
 } from "../controllers/auth.controller.js";
 
 import { verifyToken } from "../middleware/auth.middleware.js";
+import { validate } from "../middleware/validate.middleware.js";
+import {
+  forgotPasswordValidation,
+  loginValidation,
+  registerValidation,
+  resetPasswordValidation,
+} from "../validators/auth.validators.js";
 
 const router = express.Router();
-
-// Customer self registration
 
 /**
  * @swagger
@@ -53,9 +60,7 @@ const router = express.Router();
  *       201:
  *         description: Customer registered successfully
  */
-router.post("/register", registerCustomer);
-
-// Login for all roles
+router.post("/register", registerValidation, validate, registerCustomer);
 
 /**
  * @swagger
@@ -78,9 +83,7 @@ router.post("/register", registerCustomer);
  *       200:
  *         description: Login successful
  */
-router.post("/login", loginUser);
-
-// Logout
+router.post("/login", loginValidation, validate, loginUser);
 
 /**
  * @swagger
@@ -94,8 +97,6 @@ router.post("/login", loginUser);
  */
 router.post("/logout", logoutUser);
 
-// Get logged in user profile
-
 /**
  * @swagger
  * /api/auth/me:
@@ -107,5 +108,63 @@ router.post("/logout", logoutUser);
  *         description: Current user profile
  */
 router.get("/me", verifyToken, getMe);
+
+/**
+ * @swagger
+ * /api/auth/forgot-password:
+ *   post:
+ *     summary: Request password reset
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Password reset link generated
+ */
+router.post(
+  "/forgot-password",
+  forgotPasswordValidation,
+  validate,
+  forgotPassword,
+);
+
+/**
+ * @swagger
+ * /api/auth/reset-password/{token}:
+ *   post:
+ *     summary: Reset user password
+ *     tags: [Auth]
+ *     parameters:
+ *       - in: path
+ *         name: token
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Password reset successful
+ */
+router.post(
+  "/reset-password/:token",
+  resetPasswordValidation,
+  validate,
+  resetPassword,
+);
 
 export default router;
