@@ -50,7 +50,7 @@ export const getCustomerById = async (req, res) => {
 =========================== */
 export const updateCustomer = async (req, res) => {
   try {
-    const updates = req.body;
+    const updates = { ...req.body };
 
     // Prevent sensitive updates
     delete updates.role;
