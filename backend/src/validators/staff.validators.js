@@ -24,6 +24,6 @@ export const updateStaffProfileValidation = [
 
   body("gender")
     .optional()
-    .isIn(["MALE", "FEMALE", "OTHER"])
-    .withMessage("Gender must be MALE, FEMALE, or OTHER"),
+    .isIn(["male", "female", "other"])
+    .withMessage("Gender must be male, female, or other"),
 ];
