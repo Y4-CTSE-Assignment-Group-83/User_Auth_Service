@@ -21,3 +21,9 @@ pnpm install
 pnpm run dev
 ```
 
+
+# Run the docker container (inside backend folder)
+
+```bash
+docker run -p 5000:5000 --env-file .env auth-service
+```
