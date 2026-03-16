@@ -35,14 +35,7 @@ const router = express.Router();
  *       200:
  *         description: List of customers
  */
-router.get(
-  "/getall",
-  verifyToken,
-  requireAdmin,
-  customerIdValidation,
-  validate,
-  getAllCustomers,
-);
+router.get("/getall", verifyToken, requireAdmin, getAllCustomers);
 
 /**
  * @swagger
