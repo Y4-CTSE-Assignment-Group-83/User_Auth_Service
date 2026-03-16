@@ -34,4 +34,4 @@ jobs:
         with:
           context: ./backend
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/user-auth-service:latest
+          tags: ghcr.io/y4-ctse-assignment-group-83/user-auth-service:latest
