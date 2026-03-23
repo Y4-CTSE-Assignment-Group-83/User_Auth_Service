@@ -36,7 +36,7 @@ app.use(
   cors({
     origin: [
       "https://salon-dashboard-frontend.vercel.app",
-      "http://13.50.235.52:4000",
+      "http://ctse-alb-320060941.eu-north-1.elb.amazonaws.com",
     ],
     credentials: true,
   }),
