@@ -34,7 +34,10 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: [
+      "https://salon-dashboard-frontend.vercel.app",
+      "http://13.50.235.52:4000",
+    ],
     credentials: true,
   }),
 );

@@ -1,23 +1,23 @@
-# Use official Node.js image
+# Use Node 20 LTS
 FROM node:20-alpine
 
-# Create app directory
+# Set working directory
 WORKDIR /app
-
-# Install pnpm
-RUN npm install -g pnpm
 
 # Copy package files first (better caching)
 COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies
-RUN pnpm install --frozen-lockfile
+# Install pnpm
+RUN npm install -g pnpm
 
-# Copy remaining project files
+# Install dependencies (production only)
+RUN pnpm install --prod
+
+# Copy source code
 COPY . .
 
-# Expose service port
+# Expose port
 EXPOSE 5000
 
-# Start the service
+# Start app
 CMD ["node", "index.js"]
