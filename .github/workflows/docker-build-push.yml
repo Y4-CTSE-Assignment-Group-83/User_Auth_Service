@@ -33,7 +33,7 @@ jobs:
       - name: 🧪 Verify AWS Identity
         run: aws sts get-caller-identity
 
-      # 🏗 Build & Push
+      # 🏗 Build & Push Docker Image
       - name: 🏗 Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
