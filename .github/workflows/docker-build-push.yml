@@ -45,7 +45,7 @@ jobs:
       - name: 🚀 Deploy to ECS
         run: |
           aws ecs update-service \
-            --cluster ctse-auth-service \
+            --cluster user-cluster \
             --service auth-service \
             --force-new-deployment \
             --region ${{ secrets.AWS_REGION }}
