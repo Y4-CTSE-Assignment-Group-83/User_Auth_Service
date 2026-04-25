@@ -34,7 +34,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: "http://ctse-alb-73961598.eu-north-1.elb.amazonaws.com",
+    origin: "http://localhost:3000",
     credentials: true,
   }),
 );
